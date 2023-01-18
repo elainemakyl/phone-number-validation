@@ -2,20 +2,18 @@ import wretch from 'wretch'
 
 export const validatePhoneNumber = async (dialCode = '', phoneNum = '') => {
   const url = `/validate-phone-number?dialCode=${dialCode}&phoneNum=${phoneNum}`
-  try{
+  try {
     const result = await wretch(url)
-    .accept('applicaiton/json')
-    .content('application/json')
-    .get()
-    .json();
+      .accept('applicaiton/json')
+      .content('application/json')
+      .get()
+      .json()
 
-    console.log('response', result)
-    if(!result || !result?.res){
+    if (!result || !result?.res || result?.isValid === 'undefined') {
       throw new Error(result.err || 'Error occur while validating. Please try again.')
     }
-    return result?.isValid;
+    return { isValid: result.isValid }
   } catch (err) {
-    console.log('oopsie', err);
-    return err;
+    return { err }
   }
 }

@@ -43,13 +43,16 @@ const Home = () => {
       return
     }
     const dialCode = areaCode?.dial_code?.replace(/\D/g, '')
-    const isValid = await validatePhoneNumber(dialCode, phoneNum)
-    if (!isValid) {
+    const result = await validatePhoneNumber(dialCode, phoneNum)
+    console.log(result)
+    if (result.err) {
+      setStatus('Error while fetching, please try again')
+    } else if (!result?.isValid) {
       setStatus(`Phone number +${dialCode} ${phoneNum} is not valid, please try another phone number.`)
-      updatePhoneNums(dialCode, phoneNum, isValid)
+      updatePhoneNums(dialCode, phoneNum, false)
     } else {
       setStatus(`Phone number +${dialCode} ${phoneNum} is a valid phone number.`)
-      updatePhoneNums(dialCode, phoneNum, isValid)
+      updatePhoneNums(dialCode, phoneNum, true)
       navigate('/result')
     }
   }
