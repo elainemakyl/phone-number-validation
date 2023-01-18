@@ -50,20 +50,16 @@ const FieldWrapper = styled.div`
   grid-template-columns: 3fr 7fr;
   justify-content: center;
   column-gap: 20px;
+  align-items: center;
 `
 
 const FieldLabel = styled.label`
   text-align: end;
 `
 
-const PhoneNumberInputWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`
-
 const PhoneNumberInput = styled.input`
-  height: 40px;
-  min-width: 300px;
+  min-height: 40px;
+  width: 300px;
   box-sizing: border-box;
   border-radius: 5px;
 `;
@@ -72,6 +68,9 @@ const Status = styled.p`
   margin: 0;
   padding: 0;
   color: red;
+  background-color: #ef9a9a20;
+  padding: 15px 20px;
+  border-radius: 5px;
 `
 
 const ButtonWrapper = styled.div`
@@ -164,11 +163,9 @@ const Home = () => {
 
         <FieldWrapper>
           <FieldLabel>Phone number</FieldLabel>
-          <PhoneNumberInputWrapper>
             <PhoneNumberInput type='text' value={phoneNum} onChange={onPhoneChange} />
-            {status && (<Status>{status}</Status>)}
-          </PhoneNumberInputWrapper>
         </FieldWrapper>
+        {status && (<Status>{status}</Status>)}
 
         <ButtonWrapper>
           <ValidateButton onClick={onValidatePhoneNum}>Check My Number</ValidateButton>

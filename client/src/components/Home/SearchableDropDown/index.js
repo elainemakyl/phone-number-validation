@@ -8,7 +8,8 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   column-gap: 20px;
-  width: 100%;
+  min-height: 40px;
+  max-width: 300px;
 `;
 
 const Dropdown = styled.div`
@@ -23,7 +24,7 @@ const DropdownSelect = styled.div`
   border-radius: 5px;
   height: 40px;
   align-items: center;
-  padding: 0 4px;
+  padding: 5px;
   
   & input {
     border: none;
@@ -54,23 +55,25 @@ const OptionContainer = styled.div`
 
 `;
 
-const OptionList = styled.div`
-
-`;
-
 const OptionFilterInput = styled.input`
   position: sticky;
   box-sizing: border-box;
   width: 100%;
   top: 0px;
+  height: 30px;
+  font-size: 16px;
 `
 
-const Option = styled.div`
+const Option = styled.span`
   &:hover {
     background-color: #ccc;
   }
-
-  font-style: ${({ styled }) => styled ? 'bold' : 'normal'};
+  display: block;
+  padding: 5px;
+  font-size: 16px;
+  font-weight: ${({ selected }) => selected ? 'bold' : 'normal'};
+  background-color: ${({ selected }) => selected ? '#2F3C5B50' : '#fff'};
+  
 `
 
 
@@ -114,7 +117,7 @@ const AreaCodeDropdown = (props) => {
     <Container ref={dropdownRef}>
       <Dropdown>
         <DropdownSelect onClick={toggleDropdown}>
-          <p>{`${selected?.dial_code} ${selected?.flag} ${selected?.name}`}</p>
+          <p>{`${selected?.flag} ${selected?.name} (${selected?.dial_code})`}</p>
           {open ? <ArrowUp /> : <ArrowDown />}
         </DropdownSelect>
         
@@ -123,18 +126,22 @@ const AreaCodeDropdown = (props) => {
             type='text'
             onChange={onKeywordChange}
             name={`${label}Dropdown`}
-            value={keyword}  
+            value={keyword} 
+            placeholder={'Search country or area code'}
           ></OptionFilterInput>
-          <OptionList>
-            {filteredOptions.map(option => (
-              <Option
+          <div>
+            {filteredOptions.map(option =>{
+              return (
+                <Option
                 key={option.code}
                 onClick={() => onSelect(option)}
-                selected={keyword === option.name}>
-                {`${option.dial_code} ${option.flag} ${option.name}`}
+                selected={selected?.name === option.name}>
+                {`${option.flag} ${option.name} (${option.dial_code})`}
               </Option>
-            ))}
-          </OptionList>
+              )
+             
+            })}
+          </div>
          
         </OptionContainer>
       </Dropdown>
