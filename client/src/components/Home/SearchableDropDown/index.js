@@ -4,16 +4,27 @@ import styled from 'styled-components';
 import { ReactComponent as ArrowUp } from '../../../assets/icons/up-arrow.svg';
 import { ReactComponent as ArrowDown } from '../../../assets/icons/down-arrow.svg';
 
-const DropdownContainer = styled.div`
-  position: relative;
-`
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  column-gap: 20px;
+  width: 100%;
+`;
 
 const Dropdown = styled.div`
+  position: relative;
+  min-width: 300px;
+`
+
+const DropdownSelect = styled.div`
   display: flex;
   justify-content: space-between;
   border: 1px solid #000;
-
-  & > input {
+  height: 40px;
+  align-items: center;
+  padding: 0 4px;
+  
+  & input {
     border: none;
     width: 100%;
   }
@@ -29,16 +40,29 @@ const Dropdown = styled.div`
   }
 `;
 
-const OptionList = styled.div`
-  background-color: #ffeeee;
+const OptionContainer = styled.div`
+  background-color: #fff;
   display: ${({ open }) => open ? 'block' : 'none'};
   width: 100%;
   max-height: 250px;
   overflow-y: scroll;
   position: absolute;
   z-index: 99;
+  border: 1px solid #000;
+  box-sizing: border-box;
 
 `;
+
+const OptionList = styled.div`
+
+`;
+
+const OptionFilterInput = styled.input`
+  position: sticky;
+  box-sizing: border-box;
+  width: 100%;
+  top: 0px;
+`
 
 const Option = styled.div`
   &:hover {
@@ -50,19 +74,20 @@ const Option = styled.div`
 
 
 const AreaCodeDropdown = (props) => {
-  const { label, options = [], defaultSelectedValue, onSelectChange, selected} = props;
+  const { label, options = [], defaultSelectedValue, onSelectChange, selected } = props;
 
   const [open, setOpen] = useState(false);
   const [keyword, setKeyword] = useState(defaultSelectedValue || '');
-  const inputRef = useRef(null);
+  const dropdownRef = useRef(null);
 
-  // useEffect(() => {
-  //   const closeDropdown = (e) => {
-  //     if (e?.target !== inputRef?.current) setOpen(false);
-  //   };
-  //   document.addEventListener("click", closeDropdown)
-  //   return () => document.removeEventListener("click", closeDropdown)
-  // }, []);
+  useEffect(() => {
+    const closeDropdown = (e) => {
+      console.log(dropdownRef?.current);
+      if (!dropdownRef?.current?.contains(e?.target)) setOpen(false);
+    };
+    document.addEventListener("click", closeDropdown)
+    return () => document.removeEventListener("click", closeDropdown)
+  }, []);
 
   const toggleDropdown = () => {
     console.log('dropdown clicked')
@@ -70,7 +95,7 @@ const AreaCodeDropdown = (props) => {
   }
 
   const onSelect = (option) => {
-    setKeyword(option.name);
+    setKeyword('');
     onSelectChange(option);
     setOpen(!open);
   }
@@ -87,35 +112,34 @@ const AreaCodeDropdown = (props) => {
   });
 
   return (
-    <>
-      <label>{label}</label>
-      <DropdownContainer>
-        <Dropdown onClick={toggleDropdown}>
-          {open ?
-            <input
-              type='text'
-              onChange={onKeywordChange}
-              name={`${label}Dropdown`}
-              value={keyword}
-              ref={inputRef}
-            ></input> :
-            <p>{`${selected?.dial_code} ${selected?.flag} ${selected?.name}`}</p>
-          }
-
+    <Container ref={dropdownRef}>
+      <Dropdown>
+        <DropdownSelect onClick={toggleDropdown}>
+          <p>{`${selected?.dial_code} ${selected?.flag} ${selected?.name}`}</p>
           {open ? <ArrowUp /> : <ArrowDown />}
-        </Dropdown>
-        <OptionList open={open}>
-          {filteredOptions.map(option => (
-            <Option
-              key={option.code}
-              onClick={() => onSelect(option)}
-              selected={keyword === option.name}>
-              {`${option.dial_code} ${option.flag} ${option.name}`}
-            </Option>
-          ))}
-        </OptionList>
-      </DropdownContainer>
-    </>
+        </DropdownSelect>
+        
+        <OptionContainer open={open}>
+          <OptionFilterInput
+            type='text'
+            onChange={onKeywordChange}
+            name={`${label}Dropdown`}
+            value={keyword}  
+          ></OptionFilterInput>
+          <OptionList>
+            {filteredOptions.map(option => (
+              <Option
+                key={option.code}
+                onClick={() => onSelect(option)}
+                selected={keyword === option.name}>
+                {`${option.dial_code} ${option.flag} ${option.name}`}
+              </Option>
+            ))}
+          </OptionList>
+         
+        </OptionContainer>
+      </Dropdown>
+    </Container>
   )
 }
 
