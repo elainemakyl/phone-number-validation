@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import styled from "styled-components"
+// import Input from './Input';
+// import Button from './Button';
+import AreaCodeDropdown from './SearchableDropDown';
+
+import { validatePhoneNumber } from './services';
 
 import { useMediaQuery } from 'react-responsive';
-
-// import Input from './Input';
-import AreaCodeDropdown from './SearchableDropDown';
-// import Button from './Button';
-
+import { usePhoneNumbersContext } from '../../context/phone-numbers-context';
+import { useNavigate } from 'react-router-dom';
 
 import COUNTRY_CODES from './data/country-code.json';
 const DEFAULT_AREA_CODE = {
@@ -54,11 +56,23 @@ const FieldLabel = styled.label`
   text-align: end;
 `
 
+const PhoneNumberInputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
 const PhoneNumberInput = styled.input`
   height: 40px;
   min-width: 300px;
   box-sizing: border-box;
+  border-radius: 5px;
 `;
+
+const Status = styled.p`
+  margin: 0;
+  padding: 0;
+  color: red;
+`
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -96,9 +110,13 @@ const Home = () => {
   const isMobile = useMediaQuery({ query: '(min-width: 639px)' });
   const [areaCode, setAreaCode] = useState(DEFAULT_AREA_CODE);
   const [phoneNum, setPhoneNum] = useState('');
+  const [status, setStatus] = useState('');
+  const { updatePhoneNums } = usePhoneNumbersContext();
+  const navigate = useNavigate();
 
-  const onSelectChange = (option) => {
+  const onAreaCodeChange = (option) => {
     setAreaCode(option);
+    setStatus('');
   }
 
   const onPhoneChange = (e) => {
@@ -107,12 +125,30 @@ const Home = () => {
     setPhoneNum(filteredPhoneNum);
   }
 
+  const onValidatePhoneNum = async () => {
+    if(!phoneNum) {
+      setStatus('Please enter a phone number');
+      return;
+    }
+    const dialCode = areaCode?.dial_code?.replace(/\D/g, '');
+    const isValid = await validatePhoneNumber(dialCode, phoneNum) 
+    if(!isValid) {
+      setStatus(`Phone number +${dialCode} ${phoneNum} is not valid, please try another phone number.`);
+      updatePhoneNums(dialCode, phoneNum, isValid);
+    }else {
+      setStatus(`Phone number +${dialCode} ${phoneNum} is a valid phone number.`);
+      updatePhoneNums(dialCode, phoneNum, isValid);
+      navigate('/result')
+    }
+
+  }
+
   const onReset = () => {
     setAreaCode(DEFAULT_AREA_CODE);
     setPhoneNum('');
+    setStatus('');
   }
 
-  console.log(phoneNum);
   return (
     <Container>
       <Image />
@@ -122,22 +158,24 @@ const Home = () => {
           <FieldLabel>Area Code</FieldLabel>
           <AreaCodeDropdown
             options={COUNTRY_CODES}
-            onSelectChange={(option) => onSelectChange(option)}
+            onSelectChange={(option) => onAreaCodeChange(option)}
             selected={areaCode} />
         </FieldWrapper>
-      
+
         <FieldWrapper>
           <FieldLabel>Phone number</FieldLabel>
-          <PhoneNumberInput type='text' value={phoneNum} onChange={onPhoneChange}/>
+          <PhoneNumberInputWrapper>
+            <PhoneNumberInput type='text' value={phoneNum} onChange={onPhoneChange} />
+            {status && (<Status>{status}</Status>)}
+          </PhoneNumberInputWrapper>
         </FieldWrapper>
 
         <ButtonWrapper>
-          <ValidateButton>Check My Number</ValidateButton>
+          <ValidateButton onClick={onValidatePhoneNum}>Check My Number</ValidateButton>
           <ResetButton onClick={onReset}>Reset</ResetButton>
         </ButtonWrapper>
    
       </FormContainer>
-    
     </Container>
   )
 }

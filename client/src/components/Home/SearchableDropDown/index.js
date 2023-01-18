@@ -20,6 +20,7 @@ const DropdownSelect = styled.div`
   display: flex;
   justify-content: space-between;
   border: 1px solid #000;
+  border-radius: 5px;
   height: 40px;
   align-items: center;
   padding: 0 4px;
@@ -82,7 +83,6 @@ const AreaCodeDropdown = (props) => {
 
   useEffect(() => {
     const closeDropdown = (e) => {
-      console.log(dropdownRef?.current);
       if (!dropdownRef?.current?.contains(e?.target)) setOpen(false);
     };
     document.addEventListener("click", closeDropdown)
@@ -90,7 +90,6 @@ const AreaCodeDropdown = (props) => {
   }, []);
 
   const toggleDropdown = () => {
-    console.log('dropdown clicked')
     setOpen(true);
   }
 
