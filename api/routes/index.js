@@ -2,15 +2,15 @@ var express = require('express');
 var router = express.Router();
 
 
-router.get('/validate-phone-number', function(req, res, next) {
+router.get('/validate-phone-number', function (req, res, next) {
   const { dialCode, phoneNum } = req.query;
   console.log(dialCode, phoneNum);
-  if(!dialCode) {
+  if (!dialCode) {
     return res.status(400).json({
       err: 'Area code not found'
     })
   }
-  if(!phoneNum) {
+  if (!phoneNum) {
     return res.status(400).json({
       err: 'Phone number not found'
     })
@@ -23,8 +23,8 @@ router.get('/validate-phone-number', function(req, res, next) {
     1. 8 digits
     2. 2,3,5,6,7,9 (Assume both landline and mobile are considered) 
   */
- let isValidPhoneNum = false;
-  if(dialCode === '852') { //Hong Kong dial code
+  let isValidPhoneNum = false;
+  if (dialCode === '852') { //Hong Kong dial code
     console.log('is hk number');
     isValidPhoneNum = /^[23569][0-9]{7}$/.test(phoneNum);
   } else if (dialCode === '86') { // China
@@ -40,7 +40,7 @@ router.get('/validate-phone-number', function(req, res, next) {
 });
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.send('Phone Number Validation API');
 });
 
