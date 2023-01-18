@@ -51,7 +51,7 @@ const DropdownSelect = styled.div`
 
 const OptionContainer = styled.div`
   background-color: #fff;
-  display: ${({ open }) => open ? 'block' : 'none'};
+  display: block;
   width: 100%;
   max-height: 250px;
   overflow-y: scroll;
@@ -84,10 +84,10 @@ const Option = styled.span`
 `
 
 const AreaCodeDropdown = (props) => {
-  const { label, options = [], defaultSelectedValue, onSelectChange, selected } = props
+  const { options = [], onSelectChange, selected } = props
 
   const [open, setOpen] = useState(false)
-  const [keyword, setKeyword] = useState(defaultSelectedValue || '')
+  const [keyword, setKeyword] = useState('')
   const dropdownRef = useRef(null)
 
   useEffect(() => {
@@ -127,28 +127,30 @@ const AreaCodeDropdown = (props) => {
           {open ? <ArrowUp /> : <ArrowDown />}
         </DropdownSelect>
 
-        <OptionContainer open={open}>
-          <OptionFilterInput
-            type='text'
-            onChange={onKeywordChange}
-            name={`${label}Dropdown`}
-            value={keyword}
-            placeholder={'Search country or area code'}
-          ></OptionFilterInput>
-          <div>
-            {filteredOptions.map(option => {
-              return (
-                <Option
-                key={option.code}
-                onClick={() => onSelect(option)}
-                selected={selected?.name === option.name}>
-                {`${option.flag} ${option.name} (${option.dial_code})`}
-              </Option>
-              )
-            })}
-          </div>
+        {open && (
+          <OptionContainer open={open}>
+            <OptionFilterInput
+              type='text'
+              onChange={onKeywordChange}
+              name={Dropdown}
+              value={keyword}
+              placeholder={'Search country or area code'}
+            ></OptionFilterInput>
+            <div>
+              {filteredOptions.map(option => {
+                return (
+                  <Option
+                    key={option.code}
+                    onClick={() => onSelect(option)}
+                    selected={selected?.name === option.name}>
+                    {`${option.flag} ${option.name} (${option.dial_code})`}
+                  </Option>
+                )
+              })}
+            </div>
+          </OptionContainer>
+        )}
 
-        </OptionContainer>
       </Dropdown>
     </Container>
   )

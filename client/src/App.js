@@ -1,9 +1,10 @@
-import './App.css';
-import Home from './components/Home';
-import PhoneNumberResult from './components/PhoneNumberResult';
+/* eslint-disable react/react-in-jsx-scope */
+import './App.css'
+import Home from './components/Home'
+import PhoneNumberResult from './components/PhoneNumberResult'
 
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { PhoneNumbersProvider } from './context/phone-numbers-context';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { PhoneNumbersProvider } from './context/phone-numbers-context'
 
 const router = createBrowserRouter([
   {
@@ -16,7 +17,7 @@ const router = createBrowserRouter([
   }
 ])
 
-function App() {
+function App () {
   return (
     <div className="App">
       <PhoneNumbersProvider>
@@ -25,7 +26,7 @@ function App() {
         </RouterProvider>
       </PhoneNumbersProvider>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

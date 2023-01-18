@@ -24,9 +24,9 @@ const TableContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 600px;
-  height: 500px;
+  max-height: 500px;
   overflow-y: scroll;
-  
+  position: relative;
 `
 
 const Table = styled.table`
@@ -43,8 +43,10 @@ const Table = styled.table`
 
 const HeaderRow = styled.tr`
   height: 40px;
-  background-color: #2F3C5B50;
-  border-radius: 10px 10px 0 0 ;
+  background-color: #BEC2CC;
+  border-top-left-radius: 10px;
+  position: sticky;
+  top: 0px;
 `
 
 const DataRow = styled.tr`
@@ -72,24 +74,28 @@ const PhoneNumberResult = () => {
     <Container>
       <Title>Validation History</Title>
       <TableContainer>
-        <Table>
-          <thead>
-            <HeaderRow>
-              <td>Area Code</td>
-              <td>Phone Number</td>
-              <td>Valid</td>
-            </HeaderRow>
-          </thead>
-          <tbody>
-            {phoneNums.map(({ dialCode, phone, isValid }, idx) => (
-              <DataRow key={`${dialCode}${phone}_${idx}`}>
-                <td>{dialCode}</td>
-                <td>{phone}</td>
-                <td>{isValid ? 'Yes' : 'No'}</td>
-              </DataRow>
-            ))}
-          </tbody>
-        </Table>
+        {phoneNums?.length > 0
+          ? (
+          <Table>
+            <thead>
+              <HeaderRow>
+                <td>Area Code</td>
+                <td>Phone Number</td>
+                <td>Valid</td>
+              </HeaderRow>
+            </thead>
+            <tbody>
+              {phoneNums.map(({ dialCode, phone, isValid }, idx) => (
+                <DataRow key={`${dialCode}${phone}_${idx}`}>
+                  <td>{dialCode}</td>
+                  <td>{phone}</td>
+                  <td>{isValid ? 'Yes' : 'No'}</td>
+                </DataRow>
+              ))}
+            </tbody>
+          </Table>
+            )
+          : <p>No record</p>}
       </TableContainer>
       <GoBackButton onClick={onGoBack}>Go back</GoBackButton>
     </Container>
