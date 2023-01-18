@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import AreaCodeDropdown from './SearchableDropDown'
+import AreaCodeDropdown from './AreaCodeDropdown'
 
 import { validatePhoneNumber } from './data/services'
 
@@ -44,7 +44,6 @@ const Home = () => {
     }
     const dialCode = areaCode?.dial_code?.replace(/\D/g, '')
     const result = await validatePhoneNumber(dialCode, phoneNum)
-    console.log(result)
     if (result.err) {
       setStatus('Error while fetching, please try again')
     } else if (!result?.isValid) {

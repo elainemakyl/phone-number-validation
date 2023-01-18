@@ -12,8 +12,8 @@ const usePhoneNumbersContext = () => {
   return context
 }
 
-const PhoneNumbersProvider = ({ children }) => {
-  const [phoneNums, setPhoneNums] = useState([])
+const PhoneNumbersProvider = ({ initPhoneNums, children }) => {
+  const [phoneNums, setPhoneNums] = useState(initPhoneNums || [])
   const updatePhoneNums = (dialCode, phone, isValid) => {
     const newPhoneNums = [...phoneNums, {
       dialCode,
